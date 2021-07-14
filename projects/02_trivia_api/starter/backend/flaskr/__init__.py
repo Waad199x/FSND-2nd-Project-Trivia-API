@@ -31,11 +31,6 @@ def create_app(test_config=None):
   cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 
-  @app.route('/')
-  def index():
-    return "hello"
-
-
   '''
   @TODO: [[DONE]] Use the after_request decorator to set Access-Control-Allow
   '''
