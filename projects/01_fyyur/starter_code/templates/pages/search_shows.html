@@ -1,0 +1,23 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Fyyur | Shows Search {% endblock %}
+{% block content %}
+{% if results.__len__() == 0  %}
+	<h4>No upcoming Shows for {{ search_term }} </h4>
+{% elif results.__len__() > 0 %}
+<h4>Check out the artist page for upcoming shows ! </h4>
+<ul class="items">
+	{%for artist in results %}
+	<li>
+		<a href="/artists/{{ artist.id }}">
+			<i class="fas fa-users"></i>
+			<div class="item">
+				<h5>{{ artist.name }}</h5>
+			</div>
+		</a>
+	</li>
+	{% endfor %}
+{%endif%}
+
+	
+</ul>
+{% endblock %}

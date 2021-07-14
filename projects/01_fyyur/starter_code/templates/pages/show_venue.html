@@ -1,5 +1,5 @@
 {% extends 'layouts/main.html' %}
-{% block title %}Venue Search{% endblock %}
+{% block title %} {{ venue.name }} Venue {% endblock %}
 {% block content %}
 <div class="row">
 	<div class="col-sm-6">
@@ -9,8 +9,9 @@
 		<p class="subtitle">
 			ID: {{ venue.id }}
 		</p>
+
 		<div class="genres">
-			{% for genre in venue.genres %}
+			{% for genre in genres %}
 			<span class="genre">{{ genre }}</span>
 			{% endfor %}
 		</div>
@@ -47,35 +48,44 @@
 	</div>
 </div>
 <section>
-	<h2 class="monospace">{{ venue.upcoming_shows_count }} Upcoming {% if venue.upcoming_shows_count == 1 %}Show{% else %}Shows{% endif %}</h2>
+	<h2 class="monospace">{{ upcoming_shows|count }} Upcoming {% if upcoming_shows|count == 1 %}Show{% else %}Shows{% endif %}</h2>
 	<div class="row">
-		{%for show in venue.upcoming_shows %}
+		{%for show in upcoming_shows %}
 		<div class="col-sm-4">
 			<div class="tile tile-show">
 				<img src="{{ show.artist_image_link }}" alt="Show Artist Image" />
 				<h5><a href="/artists/{{ show.artist_id }}">{{ show.artist_name }}</a></h5>
-				<h6>{{ show.start_time|datetime('full') }}</h6>
+				<h6>{{ show.start_date|datetime('full') }}</h6>
 			</div>
 		</div>
 		{% endfor %}
 	</div>
 </section>
 <section>
-	<h2 class="monospace">{{ venue.past_shows_count }} Past {% if venue.past_shows_count == 1 %}Show{% else %}Shows{% endif %}</h2>
+	<h2 class="monospace">{{ past_shows|count }} Past {% if past_shows|count == 1 %}Show{% else %}Shows{% endif %}</h2>
 	<div class="row">
-		{%for show in venue.past_shows %}
+		{%for show in past_shows %}
 		<div class="col-sm-4">
 			<div class="tile tile-show">
 				<img src="{{ show.artist_image_link }}" alt="Show Artist Image" />
 				<h5><a href="/artists/{{ show.artist_id }}">{{ show.artist_name }}</a></h5>
-				<h6>{{ show.start_time|datetime('full') }}</h6>
+				<h6>{{ show.start_date|datetime('full') }}</h6>
 			</div>
 		</div>
 		{% endfor %}
+
 	</div>
 </section>
 
-<a href="/venues/{{ venue.id }}/edit"><button class="btn btn-primary btn-lg">Edit</button></a>
+</a>
+<a href="/venues/{{ venue.id }}/edit">
+	<button class="btn btn-primary btn-lg">Edit</button>
+</a>
+<h5> </h5>
+<form  method = 'post'>
+<button type="submit" class="btn btn-primary btn-lg" data-id="{{ venue_id }}"> Delete </button>
+</form>
+
 
 {% endblock %}
 

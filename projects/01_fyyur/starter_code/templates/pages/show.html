@@ -10,7 +10,19 @@
     <ul class="nav nav-pills">
         <li class="active"><a>Shows</a></li>
     </ul>
-
+    <h3>Number of search results for "{{ search_term }}": {% print(results.__len__()) %}</h3>
+    <ul class="items">
+        {% for show in results %}
+        <li>
+            <a href="/venues/{{ venue.id }}">
+                <i class="fas fa-music"></i>
+                <div class="item">
+                    <h5>{{ venue.name }} venue has show at {{ show.start_date|datetime('full') }} </h5>
+                </div>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
 {#    Todo implement show search frontend #}
 
 {% endblock %}

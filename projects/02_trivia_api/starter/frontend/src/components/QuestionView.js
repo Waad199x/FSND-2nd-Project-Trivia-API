@@ -23,14 +23,14 @@ class QuestionView extends Component {
 
   getQuestions = () => {
     $.ajax({
-      url: `/questions?page=${this.state.page}`, //TODO: update request URL
+      url: `/Questions?page=${this.state.page}`, //TODO: update request URL [[DONE]]
       type: "GET",
       success: (result) => {
         this.setState({
-          questions: result.questions,
-          totalQuestions: result.total_questions,
+          questions: result.Questions_list,
+          totalQuestions: result.total_Qs,
           categories: result.categories,
-          currentCategory: result.current_category })
+          current_category: result.current_category })
         return;
       },
       error: (error) => {
@@ -60,25 +60,25 @@ class QuestionView extends Component {
 
   getByCategory= (id) => {
     $.ajax({
-      url: `/categories/${id}/questions`, //TODO: update request URL
+      url: `/Categories/${id}/Questions`, //TODO: update request URL [[DONE]]
       type: "GET",
       success: (result) => {
         this.setState({
-          questions: result.questions,
-          totalQuestions: result.total_questions,
+          questions: result.Questions_list,
+          totalQuestions: result.total_Qs,
           currentCategory: result.current_category })
         return;
       },
       error: (error) => {
-        alert('Unable to load questions. Please try your request again')
+        alert('Unable to load questions per category. Please try your request again')
         return;
       }
     })
   }
-
+ 
   submitSearch = (searchTerm) => {
     $.ajax({
-      url: `/questions`, //TODO: update request URL
+      url: `/Questions/search`, //TODO: update request URL [[DONE]]
       type: "POST",
       dataType: 'json',
       contentType: 'application/json',
@@ -89,13 +89,13 @@ class QuestionView extends Component {
       crossDomain: true,
       success: (result) => {
         this.setState({
-          questions: result.questions,
-          totalQuestions: result.total_questions,
+          questions: result.Questions,
+          totalQuestions: result.total_Qs,
           currentCategory: result.current_category })
         return;
       },
       error: (error) => {
-        alert('Unable to load questions. Please try your request again')
+        alert('Unable to load search results. Please try your request again')
         return;
       }
     })
@@ -105,10 +105,11 @@ class QuestionView extends Component {
     if(action === 'DELETE') {
       if(window.confirm('are you sure you want to delete the question?')) {
         $.ajax({
-          url: `/questions/${id}`, //TODO: update request URL
+          url: `/Questions/${id}`, //TODO: update request URL [[DONE]]
           type: "DELETE",
           success: (result) => {
             this.getQuestions();
+            alert('Question deleted successfully!')
           },
           error: (error) => {
             alert('Unable to load questions. Please try your request again')
