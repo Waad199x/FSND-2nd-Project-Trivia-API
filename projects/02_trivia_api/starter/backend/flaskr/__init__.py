@@ -1,5 +1,7 @@
 import os
 from flask import Flask, request, abort, jsonify
+import json
+import unittest
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import random
@@ -29,6 +31,11 @@ def create_app(test_config=None):
   app = Flask(__name__)
   setup_db(app)
   cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+
+
+  @app.route('/')
+  def index():
+    return "hello"
 
 
   '''
@@ -121,10 +128,15 @@ def create_app(test_config=None):
 
     try:
       Q = Question.query.filter(Question.id == Q_id).one_or_none()
-      Q.delete()
+      
 
       if Q is None:
         abort(404)
+        
+      Q.delete()  
+      selection = Question.query.order_by(Question.id).all()
+      current_page = paginate_Qs(request, selection)
+      
 
       return jsonify({
         'success': True,
@@ -194,17 +206,22 @@ def create_app(test_config=None):
     searchTerm = body.get('searchTerm', None)   
 
     try:
-      search_results = Question.query.order_by(Question.category).filter(Question.question.ilike('%{}%'.format(searchTerm)))
-      current_page = paginate_Qs(request, search_results)
-      
-      return jsonify({
-          'success': True,
-          'Questions': current_page,
-          'total_Qs': len(search_results.all()),
-          'current_category' : all_catecories()
-        })
+      if searchTerm == ',':
+        abort(422)
+
+      else:  
+        search_results = Question.query.order_by(Question.category).filter(Question.question.ilike('%{}%'.format(searchTerm)))
+        current_page = paginate_Qs(request, search_results)
+        
+        return jsonify({
+            'success': True,
+            'Questions': current_page,
+            'total_Qs': len(search_results.all()),
+            'current_category' : all_catecories()
+          })
      
     except:
+
        abort(422)
 
 
@@ -256,7 +273,7 @@ def create_app(test_config=None):
 
     try:
       body = request.get_json()
-      previous_questions = body.get("previous_questions")
+      previous_questions = body.get('previous_questions')
       quiz_category = body.get('quiz_category')
 
       if quiz_category['type'] == 'click':
@@ -275,7 +292,7 @@ def create_app(test_config=None):
               'question': Random_Question
             })
     except :
-      abort(422)
+      abort(404)
 
 
   '''
@@ -308,6 +325,16 @@ def create_app(test_config=None):
       "error": 400,
       "message": "bad request"
       }), 400
+
+  @app.errorhandler(405)
+  def method_not_allowed(error):
+      return jsonify({
+        "success": False, 
+        "error": 405,
+        "message": "method not allowed"
+        }), 405
+
+
   return app
 
-    
+   
