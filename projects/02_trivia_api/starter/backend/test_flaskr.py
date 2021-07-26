@@ -39,6 +39,7 @@ class TriviaAppTestCase(unittest.TestCase):
         }
         self.Quiz = { "previous_questions":[],'quiz_category' : {'type': 'History' , 'id' : 4}}
 
+        self.Quiz2 = { "previous_questions":[],'quiz_category' : {'type': 'History' , 'id' : 1}}
 
 
     def tearDown(self):
@@ -116,20 +117,23 @@ class TriviaAppTestCase(unittest.TestCase):
     # Note \ use new id for each test
     # Tip for using the rest of the tests without this one is to change the function name from test to Test 
     def test_deleting_Question(self):
-        res = self.client().delete('/Questions/77')
+        res = self.client().delete('/Questions/100')
         data = json.loads(res.data)
 
-        Q = Question.query.filter(Question.id == 77).one_or_none()
+        Q = Question.query.filter(Question.id == 10).one_or_none()
+
         self.assertEqual(Q, None)
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 10)
         self.assertEqual(data['success'], True)
-        self.assertEqual(data['deleted'],77)
+        self.assertEqual(data['deleted'],10)
 
     # Deleting non existing question
     def test_deleting_Question_that_does_not_exist(self):
         res = self.client().delete('/Questions/2000')
         data = json.loads(res.data)
 
+        Q = Question.query.filter(Question.id == 2000).one_or_none()
+        self.assertEqual(Q, None)
         self.assertEqual(res.status_code, 422)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'unprocessable')    
@@ -234,12 +238,14 @@ class TriviaAppTestCase(unittest.TestCase):
 
     # Error for non for non-existing quiz page
     def test_quizzes(self):
-        res = self.client().post('/quizzes?page=4')
+        res = self.client().post('/quizzes/3')
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'resource not found')
+
+
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
