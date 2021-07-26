@@ -5,6 +5,8 @@ import unittest
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import random
+from werkzeug.exceptions import HTTPException, NotFound
+
 
 from models import setup_db, Question, Category
 
@@ -138,9 +140,8 @@ def create_app(test_config=None):
                 'deleted': Q_id
                 })
 
-        except unprocessable as error:
-            print(error)
-
+        except HTTPException  as e :
+            return abort(422)
     '''
     @TODO: [[DONE]]
     Create an endpoint to POST a new question,
@@ -213,9 +214,8 @@ def create_app(test_config=None):
                   'current_category': all_catecories()
                   })
 
-        except unprocessable as error:
-            print(error)
-
+        except HTTPException  as e :
+            return abort(422)
     '''
     @TODO: [[DONE]]
     Create a GET endpoint to get questions based on category.
@@ -258,7 +258,7 @@ def create_app(test_config=None):
 
         try:
             body = request.get_json()
-            previous_questions = body.get('previous_questions')
+            previous_questions = body.get("previous_questions")
             quiz_category = body.get('quiz_category')
 
             if quiz_category['type'] == 'click':
@@ -281,8 +281,8 @@ def create_app(test_config=None):
                     'success': True,
                     'question': Random_Question
                   })
-        except not_found as error:
-            print(error)
+        except HTTPException  as e :
+            return abort(404)
 
     '''
     @TODO: [[DONE]]
